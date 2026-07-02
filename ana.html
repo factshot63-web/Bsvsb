@@ -2,14 +2,14 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Smart Avatar Builder</title>
+<title>Ultimate Avatar Builder</title>
 
 <style>
 body{
 margin:0;
-background:#0f172a;
-color:white;
+background:#0b1220;
 font-family:Arial;
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -17,36 +17,31 @@ height:100vh;
 }
 
 .box{
-width:420px;
+width:500px;
 background:#111827;
 padding:20px;
 border-radius:20px;
 text-align:center;
+box-shadow:0 0 40px rgba(0,0,0,0.6);
 }
 
-video{
+iframe{
 width:100%;
+height:600px;
+border:none;
 border-radius:15px;
+background:white;
 }
 
-svg{
-width:200px;
-height:200px;
-background:white;
-border-radius:15px;
+h2{
+margin-bottom:10px;
+}
+
+.small{
+font-size:13px;
+opacity:0.8;
 margin-top:10px;
 }
-
-select, button{
-width:100%;
-padding:10px;
-margin-top:8px;
-border:none;
-border-radius:10px;
-}
-button{cursor:pointer}
-#start{background:#3b82f6;color:white}
-#make{background:#22c55e;color:white}
 </style>
 </head>
 
@@ -54,125 +49,20 @@ button{cursor:pointer}
 
 <div class="box">
 
-<h2>صورة → أفاتار ذكي 🔥</h2>
+<h2>🔥 اصنع شخصيتك الوحشية</h2>
 
-<video id="video" autoplay></video>
+<!-- SNAP LEVEL AVATAR BUILDER -->
+<iframe
+src="https://readyplayer.me/avatar?frameApi"
+allow="camera *; microphone *">
+</iframe>
 
-<button id="start" onclick="startCam()">تشغيل الكاميرا</button>
-<button id="make" onclick="makeAvatar()">تحويل لأفاتار</button>
-
-<svg id="avatar" viewBox="0 0 200 200">
-
-<circle id="face" cx="100" cy="100" r="60" fill="#f5cfa0"/>
-
-<circle cx="80" cy="90" r="8" fill="black"/>
-<circle cx="120" cy="90" r="8" fill="black"/>
-
-<path id="mouth"
-d="M70 130 Q100 150 130 130"
-stroke="black" stroke-width="4" fill="transparent"/>
-
-</svg>
-
-<select onchange="edit('skin',this.value)">
-<option value="#f5cfa0">فاتح</option>
-<option value="#d19b73">قمحي</option>
-<option value="#8d5524">غامق</option>
-</select>
-
-<select onchange="edit('emotion',this.value)">
-<option value="normal">عادي</option>
-<option value="happy">سعيد</option>
-<option value="sad">حزين</option>
-</select>
-
+<div class="small">
+👆 صمم وجهك + جسمك + ملابسك + شخصيتك كاملة  
+ثم استخدمها داخل تطبيقك مباشرة
 </div>
 
-<script>
-
-let video=document.getElementById("video");
-
-function startCam(){
-navigator.mediaDevices.getUserMedia({video:true})
-.then(stream=>{
-video.srcObject=stream;
-});
-}
-
-function makeAvatar(){
-
-let canvas=document.createElement("canvas");
-let ctx=canvas.getContext("2d");
-
-canvas.width=200;
-canvas.height=200;
-
-ctx.drawImage(video,0,0,200,200);
-
-let data=ctx.getImageData(0,0,200,200).data;
-
-// تحليل لون البشرة
-let r=0,g=0,b=0,c=0;
-
-for(let i=0;i<data.length;i+=50){
-r+=data[i];
-g+=data[i+1];
-b+=data[i+2];
-c++;
-}
-
-r=Math.floor(r/c);
-g=Math.floor(g/c);
-b=Math.floor(b/c);
-
-let skin=`rgb(${r},${g},${b})`;
-
-document.getElementById("face").setAttribute("fill",skin);
-
-// تحليل بسيط للتعبير
-let avg=(r+g+b)/3;
-
-if(avg>140){
-setMood("happy");
-}
-else if(avg<100){
-setMood("sad");
-}
-else{
-setMood("normal");
-}
-
-}
-
-function setMood(m){
-
-let mouth=document.getElementById("mouth");
-
-if(m==="happy"){
-mouth.setAttribute("d","M70 130 Q100 160 130 130");
-}
-else if(m==="sad"){
-mouth.setAttribute("d","M70 150 Q100 120 130 150");
-}
-else{
-mouth.setAttribute("d","M70 130 Q100 130 130 130");
-}
-
-}
-
-function edit(type,value){
-
-if(type==="skin"){
-document.getElementById("face").setAttribute("fill",value);
-}
-
-if(type==="emotion"){
-setMood(value);
-}
-
-}
-
-</script>
+</div>
 
 </body>
 </html>
