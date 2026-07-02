@@ -1,82 +1,50 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>3D Avatar Controller</title>
-
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
-<style>
-body{
-margin:0;
-background:#0b1220;
-font-family:Arial;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.box{
-width:420px;
-background:#111827;
-padding:20px;
-border-radius:20px;
-text-align:center;
-}
-
-model-viewer{
-width:100%;
-height:400px;
-background:#fff;
-border-radius:15px;
-}
-
-button{
-width:100%;
-padding:10px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-
-#walk{background:#22c55e;color:white}
-#idle{background:#3b82f6;color:white}
-#run{background:#f59e0b;color:white}
-</style>
+    <title>AI Avatar Engine</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        #webcam { position: absolute; width: 640px; height: 480px; }
+        #canvas { position: absolute; width: 640px; height: 480px; }
+    </style>
 </head>
-
 <body>
+    <video id="webcam" style="display:none;"></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
 
-<div class="box">
+    <script type="module">
+        const videoElement = document.getElementById('webcam');
+        const canvasElement = document.getElementById('canvas');
+        const canvasCtx = canvasElement.getContext('2d');
 
-<h2>🔥 تحكم في شخصيتك 3D</h2>
+        const faceMesh = new FaceMesh({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+        }});
 
-<!-- 3D AVATAR -->
-<model-viewer
-id="avatar"
-src="https://models.readyplayer.me/your-avatar.glb"
-camera-controls
-auto-rotate
-></model-viewer>
+        faceMesh.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
 
-<button id="idle" onclick="setAnim('Idle')">وضع الوقوف</button>
-<button id="walk" onclick="setAnim('Walking')">مشي</button>
-<button id="run" onclick="setAnim('Running')">جري</button>
+        faceMesh.onResults((results) => {
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            if (results.multiFaceLandmarks) {
+                for (const landmarks of results.multiFaceLandmarks) {
+                    // هنا يتم الرسم: يمكنك ربط إحداثيات الوجه بالأفاتار الخاص بك
+                    console.log("الوجه مكتشف، الإحداثيات:", landmarks[0]);
+                }
+            }
+        });
 
-</div>
-
-<script>
-
-const avatar=document.getElementById("avatar");
-
-function setAnim(anim){
-avatar.animationName=anim;
-}
-
-</script>
-
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await faceMesh.send({image: videoElement}); },
+            width: 640, height: 480
+        });
+        camera.start();
+    </script>
 </body>
 </html>
