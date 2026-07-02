@@ -2,7 +2,9 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Ultimate Avatar Builder</title>
+<title>3D Avatar Controller</title>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
 body{
@@ -17,31 +19,32 @@ height:100vh;
 }
 
 .box{
-width:500px;
+width:420px;
 background:#111827;
 padding:20px;
 border-radius:20px;
 text-align:center;
-box-shadow:0 0 40px rgba(0,0,0,0.6);
 }
 
-iframe{
+model-viewer{
 width:100%;
-height:600px;
-border:none;
+height:400px;
+background:#fff;
 border-radius:15px;
-background:white;
 }
 
-h2{
-margin-bottom:10px;
-}
-
-.small{
-font-size:13px;
-opacity:0.8;
+button{
+width:100%;
+padding:10px;
 margin-top:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
 }
+
+#walk{background:#22c55e;color:white}
+#idle{background:#3b82f6;color:white}
+#run{background:#f59e0b;color:white}
 </style>
 </head>
 
@@ -49,20 +52,31 @@ margin-top:10px;
 
 <div class="box">
 
-<h2>🔥 اصنع شخصيتك الوحشية</h2>
+<h2>🔥 تحكم في شخصيتك 3D</h2>
 
-<!-- SNAP LEVEL AVATAR BUILDER -->
-<iframe
-src="https://readyplayer.me/avatar?frameApi"
-allow="camera *; microphone *">
-</iframe>
+<!-- 3D AVATAR -->
+<model-viewer
+id="avatar"
+src="https://models.readyplayer.me/your-avatar.glb"
+camera-controls
+auto-rotate
+></model-viewer>
 
-<div class="small">
-👆 صمم وجهك + جسمك + ملابسك + شخصيتك كاملة  
-ثم استخدمها داخل تطبيقك مباشرة
+<button id="idle" onclick="setAnim('Idle')">وضع الوقوف</button>
+<button id="walk" onclick="setAnim('Walking')">مشي</button>
+<button id="run" onclick="setAnim('Running')">جري</button>
+
 </div>
 
-</div>
+<script>
+
+const avatar=document.getElementById("avatar");
+
+function setAnim(anim){
+avatar.animationName=anim;
+}
+
+</script>
 
 </body>
 </html>
