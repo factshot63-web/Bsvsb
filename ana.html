@@ -1,28 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-    <title>My Avatar System</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <meta charset="UTF-8">
+    <title>صانع الأفاتار الجبار</title>
     <style>
-        body { text-align: center; font-family: sans-serif; background: #f0f0f0; }
-        model-viewer { width: 100%; height: 500px; }
-        .controls { padding: 20px; }
+        body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; }
+        #avatar-container { width: 100%; height: 600px; border: none; }
+        .btn { padding: 15px 30px; font-size: 18px; cursor: pointer; background: #007bff; border: none; color: white; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <h1>مرحباً بك في نظام الأفاتار</h1>
-    
-    <model-viewer 
-        src="https://models.readyplayer.me/64a500000000000000000000.glb" 
-        alt="أفاتار المستخدم" 
-        auto-rotate camera-controls>
-    </model-viewer>
+    <h1>مرحباً بك في نظام إنشاء الأفاتار</h1>
+    <p>اضغط على الزر لفتح الكاميرا وإنشاء أفاتارك الخاص</p>
 
-    <div class="controls">
-        <p>هذا الأفاتار جاهز للتحريك!</p>
-        <button onclick="alert('هنا سنقوم ببرمجة فتح الكاميرا للتحكم في الأفاتار!')">ابدأ التحكم بالوجه</button>
-    </div>
+    <iframe id="avatar-frame" 
+            src="https://demo.readyplayer.me/avatar?frameApi" 
+            allow="camera *; microphone *; clipboard-write"
+            id="avatar-container" width="100%" height="600px">
+    </iframe>
 
+    <script>
+        const frame = document.getElementById('avatar-frame');
+
+        // يستقبل الحدث عند انتهاء المستخدم من إنشاء الأفاتار
+        window.addEventListener('message', (event) => {
+            if (event.data.source === 'readyplayerme') {
+                const avatarUrl = event.data.url;
+                console.log("تم إنشاء الأفاتار بنجاح! الرابط:", avatarUrl);
+                alert("تم استلام الأفاتار الخاص بك، الرابط موجود في الـ Console");
+                // هنا يمكنك تحويل المستخدم لصفحة العرض أو تحريك الأفاتار
+            }
+        });
+    </script>
 </body>
 </html>
